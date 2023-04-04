@@ -109,8 +109,8 @@ export class MeetingManager implements AudioVideoObserver {
   private eventDidReceiveRef: EventObserver;
 
   private deviceLabels: DeviceLabels | DeviceLabelTrigger;
-  
-  public getDeviceLabels() : DeviceLabels | DeviceLabelTrigger {
+
+  getDeviceLabels(): DeviceLabels | DeviceLabelTrigger {
     return this.deviceLabels;
   }
 
@@ -246,7 +246,7 @@ export class MeetingManager implements AudioVideoObserver {
       this.meetingStatus = MeetingStatus.Reconnecting;
       this.publishMeetingStatus();
     }
-  }
+  };
 
   audioVideoDidStop = (sessionStatus: MeetingSessionStatus): void => {
     const sessionStatusCode = sessionStatus.statusCode();
