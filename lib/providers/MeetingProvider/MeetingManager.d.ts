@@ -1,0 +1,88 @@
+import { AudioInputDevice, AudioVideoFacade, AudioVideoObserver, DefaultMeetingSession, EventAttributes, EventName, Logger, MeetingSessionConfiguration, MeetingSessionStatus, VideoInputDevice } from 'amazon-chime-sdk-js';
+import { DeviceLabels, DeviceLabelTrigger, DeviceLabelTriggerStatus, MeetingStatus } from '../../types';
+import { AttendeeResponse, FullDeviceInfoType, MeetingManagerJoinOptions } from './types';
+export declare class MeetingManager implements AudioVideoObserver {
+    meetingSession: DefaultMeetingSession | null;
+    meetingStatus: MeetingStatus;
+    meetingStatusObservers: ((meetingStatus: MeetingStatus) => void)[];
+    audioVideo: AudioVideoFacade | null;
+    audioVideoObservers: AudioVideoObserver;
+    meetingSessionConfiguration: MeetingSessionConfiguration | undefined;
+    meetingId: string | null;
+    getAttendee?: (chimeAttendeeId: string, externalUserId?: string) => Promise<AttendeeResponse>;
+    selectedAudioOutputDevice: string | null;
+    selectedAudioOutputDeviceObservers: ((deviceId: string | null) => void)[];
+    selectedAudioInputDevice: AudioInputDevice | undefined;
+    selectedAudioInputDeviceObservers: ((device: AudioInputDevice | undefined) => void)[];
+    selectedVideoInputDevice: VideoInputDevice | undefined;
+    selectedVideoInputDeviceObservers: ((device: VideoInputDevice | undefined) => void)[];
+    audioInputDevices: MediaDeviceInfo[] | null;
+    audioOutputDevices: MediaDeviceInfo[] | null;
+    videoInputDevices: MediaDeviceInfo[] | null;
+    deviceLabelTriggerStatus: DeviceLabelTriggerStatus;
+    deviceLabelTriggerStatusObservers: ((status: DeviceLabelTriggerStatus) => void)[];
+    deviceLabelTriggerObservers: (() => void)[];
+    activeSpeakerListener: ((activeSpeakers: string[]) => void) | null;
+    activeSpeakerCallbacks: ((activeSpeakers: string[]) => void)[];
+    activeSpeakers: string[];
+    audioVideoCallbacks: ((audioVideo: AudioVideoFacade | null) => void)[];
+    devicesUpdatedCallbacks: ((fullDeviceInfo: FullDeviceInfoType) => void)[];
+    private logger;
+    private meetingEventObserverSet;
+    private eventDidReceiveRef;
+    private deviceLabels;
+    getDeviceLabels(): DeviceLabels | DeviceLabelTrigger;
+    constructor(logger: Logger);
+    initializeMeetingManager(): void;
+    join(meetingSessionConfiguration: MeetingSessionConfiguration, options?: MeetingManagerJoinOptions): Promise<void>;
+    private parseJoinParams;
+    start(): Promise<void>;
+    leave(): Promise<void>;
+    audioVideoDidStart: () => void;
+    audioVideoDidStartConnecting: (reconnecting: boolean) => void;
+    audioVideoDidStop: (sessionStatus: MeetingSessionStatus) => void;
+    setupAudioVideoObservers(): void;
+    updateDeviceLists(): Promise<void>;
+    setupDeviceLabelTrigger(deviceLabels?: DeviceLabels | DeviceLabelTrigger): void;
+    private setupActiveSpeakerDetection;
+    listAndSelectDevices(deviceLabels?: DeviceLabels | DeviceLabelTrigger): Promise<void>;
+    startAudioInputDevice: (device: AudioInputDevice) => Promise<void>;
+    startAudioOutputDevice: (deviceId: string) => Promise<void>;
+    startVideoInputDevice: (device: VideoInputDevice) => Promise<void>;
+    stopVideoInputDevice: () => Promise<void>;
+    selectVideoInputDevice: (device: VideoInputDevice) => void;
+    invokeDeviceProvider: (deviceLabels: DeviceLabels) => void;
+    /**
+     * ====================================================================
+     * Subscriptions
+     * ====================================================================
+     */
+    subscribeToAudioVideo: (callback: (av: AudioVideoFacade | null) => void) => void;
+    unsubscribeFromAudioVideo: (callbackToRemove: (av: AudioVideoFacade | null) => void) => void;
+    publishAudioVideo: () => void;
+    subscribeToActiveSpeaker: (callback: (activeSpeakers: string[]) => void) => void;
+    unsubscribeFromActiveSpeaker: (callbackToRemove: (activeSpeakers: string[]) => void) => void;
+    publishActiveSpeaker: () => void;
+    subscribeToSelectedVideoInputDevice: (callback: (device: VideoInputDevice | undefined) => void) => void;
+    unsubscribeFromSelectedVideoInputDevice: (callbackToRemove: (device: VideoInputDevice | undefined) => void) => void;
+    private publishSelectedVideoInputDevice;
+    subscribeToSelectedAudioInputDevice: (callback: (device: AudioInputDevice) => void) => void;
+    unsubscribeFromSelectedAudioInputDevice: (callbackToRemove: (device: AudioInputDevice) => void) => void;
+    private publishSelectedAudioInputDevice;
+    subscribeToSelectedAudioOutputDevice: (callback: (deviceId: string | null) => void) => void;
+    unsubscribeFromSelectedAudioOutputDevice: (callbackToRemove: (deviceId: string | null) => void) => void;
+    private publishSelectedAudioOutputDevice;
+    subscribeToMeetingStatus: (callback: (meetingStatus: MeetingStatus) => void) => void;
+    unsubscribeFromMeetingStatus: (callbackToRemove: (meetingStatus: MeetingStatus) => void) => void;
+    private publishMeetingStatus;
+    subscribeToDeviceLabelTrigger: (callback: () => void) => void;
+    unsubscribeFromDeviceLabelTrigger: (callbackToRemove: () => void) => void;
+    private publishDeviceLabelTrigger;
+    subscribeToDeviceLabelTriggerStatus: (callback: (permission: DeviceLabelTriggerStatus) => void) => void;
+    unsubscribeFromDeviceLabelTriggerStatus: (callbackToRemove: (permission: DeviceLabelTriggerStatus) => void) => void;
+    private publishDeviceLabelTriggerStatus;
+    subscribeToEventDidReceive: (callback: (name: EventName, attributes: EventAttributes) => void) => void;
+    unsubscribeFromEventDidReceive: (callbackToRemove: (name: EventName, attributes: EventAttributes) => void) => void;
+    private publishEventDidReceiveUpdate;
+}
+export default MeetingManager;
